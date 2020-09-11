@@ -2,9 +2,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>CKEditor 5 – Classic editor</title>
-    <!-- <script src="node_modules/@ckeditor/ckeditor5-build-decoupled-document/build/ckeditor.js"></script> -->
-
+    <title>CKEditor 5</title>
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="question.css">
 </head>
@@ -12,51 +10,65 @@
 <body>
     <h1>Classic editor</h1>
 
-    <div id="editor">
-        <section class="question-box" data-id="2">
-            <div class="question-box__header">
-                <span class="question-box__arrow question-box__arrow--left"> <== </span>
-                <span class="question-box__arrow question-box__arrow--right">==></span>
-                <h3 contenteditable="false" class="question-box__header__title">This Is Question Box?</h3>
-                <div class="question-box__header__current-answer">
-                    <div class="question-box__header__answer" data-hidden="false">Yes</div>
-                    <div class="question-box__header__answer" data-hidden="true">No</div> 
-                </div>
-            </div>
-            <div class="question-box__body">
-                <div class="question-box__answer" data-hidden="false">
-                    Yes. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Harum, saepe! Alias accusantium quisquam, ad aliquid nobis molestias nihil reprehenderit officiis aspernatur sed architecto cum error deserunt perferendis nisi eveniet beatae.
-                </div>
-
-                <div class="question-box__answer" data-hidden="true">
-                    No. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Harum, saepe! Alias accusantium quisquam, ad aliquid nobis molestias nihil reprehenderit officiis aspernatur sed architecto cum error deserunt perferendis nisi eveniet beatae.
-                </div>
-            </div>
-        </section>
-        <br>
-    </div>
-
-
-    <div class="modal" id="modal" style="display: none;">
-        <div class="modal__dialog">
-            <div class="modal__fields">
-                <input type="text" placeholder="title" class="modal__dialog__title" id="modalTitle">
-                <br>
-                <br>
-                <input type="text" placeholder="answer1">
-                <br>
-                <br>
-                <input type="text" placeholder="answer2">
-            </div>
-            <br><br>
-            <div class="modal__buttons">
-                <button id="ok">Ok</button>
-                <button id="cancel">Cancel</button>
-            </div>
+    <div class="ctoolbar">
+        <div class="questions">
+            <h3 class="ctoolbar__heading">Questions</h3>
+            <ul id="questions"></ul>
+            <button id="addQuestion">Add Question</button>
+        </div>
+        <div class="placeholders">
+            <h3 class="ctoolbar__heading">Placeholders</h3>
+            <ul id="placeholders"></ul>
+            <button id="addPlaceholder">Add Placeholder</button>
         </div>
     </div>
 
+    <div class="container">
+        <div id="editor">
+           <section class="question-box" data-id="2">
+               <div class="question-box__header"> 
+                   <span class="question-box__arrow question-box__arrow&#45;&#45;left"> <== </span>
+                   <span class="question-box__arrow question-box__arrow&#45;&#45;right">==></span>
+                   <h3 contenteditable="false" class="question-box__header__title">This Is Question Box?</h3>
+                   <div class="question-box__header__current-answer">
+                       <div class="question-box__header__answer" data-hidden="false">Yes</div>
+                       <div class="question-box__header__answer" data-hidden="true">No</div>
+                   </div>
+               </div>
+               <div class="question-box__body">
+                   <div class="question-box__answer" data-hidden="false">
+                       Yes. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Harum, saepe! Alias accusantium quisquam, ad aliquid nobis molestias nihil reprehenderit officiis aspernatur sed architecto cum error deserunt perferendis nisi eveniet beatae.
+                   </div>
+
+                   <div class="question-box__answer" data-hidden="true">
+                       No. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Harum, saepe! Alias accusantium quisquam, ad aliquid nobis molestias nihil reprehenderit officiis aspernatur sed architecto cum error deserunt perferendis nisi eveniet beatae.
+                   </div>
+               </div>
+           </section>
+        </div>
+    </div>
+
+    <button id="save" onclick="save()">Button</button>
+
     <script src="./dist/bundle.js"></script>
+    <script src="node_modules/blueimp-tmpl/js/tmpl.min.js"></script>
+    <script src="ctoolbar.js"></script>
+
+    <script>
+        function save() {
+            const data = document.querySelector('.ck-content').innerHTML;
+            const id = Date.now();
+            const result = {
+                id,
+                data: CKeditor.getData(),
+                placeholders,
+                questions
+            };
+
+            localStorage.setItem(id.toString(), JSON.stringify(result));
+        }
+    </script>
+
 </body>
 
 </html>

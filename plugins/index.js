@@ -6,20 +6,28 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import QuestionBox from "./questionbox/questionbox";
+import Placeholder from "./placeholder/placeholder";
 
 ClassicEditor
     .create( document.querySelector( '#editor' ), {
         // extraPlugins: [ ConvertDivAttributes ],
-        plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, QuestionBox],
+        plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, QuestionBox, Placeholder],
         toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', 'QuestionBox' ],
+        placeholderConfig: {
+            types: [ 'date', 'string' ]
+        }
     } )
     .then( editor => {
+        window.CKeditor = editor;
         AddQuestionBoxListiners();
+
+        setTimeout(() => {
+            console.log('Data: ', editor.getData())
+        }, 500)
     } )
     .catch( error => {
         console.error( error.stack );
     });
-
 
     function AddQuestionBoxListiners() {
         document.body.addEventListener('click', function(event) {
@@ -28,13 +36,13 @@ ClassicEditor
                 const parent = arrow.parentNode.parentNode;
                 const ansContent = parent.querySelectorAll('.question-box__answer');
                 const ansQ = parent.querySelectorAll('.question-box__header__answer')
-                const currentHeaderAnswer = parent.querySelector('.question-box__header__answer[data-hidden="false"]'); 
+                const currentHeaderAnswer = parent.querySelector('.question-box__header__answer[data-hidden="false"]');
                 const currentIndex = getNodeIndex(currentHeaderAnswer);
 
                 const targetIndex = arrow.className.includes('question-box__arrow--left')
                     ? currentIndex - 1 > 0 ? currentIndex - 1 : 0
                     : currentIndex + 1 < ansQ.length ? currentIndex + 1 : currentIndex;
-                 
+
                 if (targetIndex === currentIndex) {
                     return false;
                 }
@@ -45,7 +53,7 @@ ClassicEditor
                         ansContent[index].dataset.hidden = "false";
                     } else {
                         element.dataset.hidden = "true";
-                        ansContent[index].dataset.hidden = "true"; 
+                        ansContent[index].dataset.hidden = "true";
                     }
                 });
             }

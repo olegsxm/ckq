@@ -98,13 +98,13 @@ export default class QuestionBoxEditing extends Plugin {
             isLimit: true,
             allowIn: 'questionBoxHeader',
             allowContentOf: '$block'
-        })
-
+        });
+        
         schema.register('questionBoxTitle', {
             isLimit: true,
             allowIn: 'questionBoxHeader',
             allowContentOf: '$block'
-        })
+        });
 
         schema.register('questionBoxHeaderCurrentAnswer', {
             isLimit: true,
@@ -119,6 +119,7 @@ export default class QuestionBoxEditing extends Plugin {
             attributes: ['data-hidden']
         })
 
+
         schema.register('questionBoxBody', {
             isLimit: true,
             allowIn: 'questionBox',
@@ -131,133 +132,155 @@ export default class QuestionBoxEditing extends Plugin {
             allowContentOf: '$block',
             isContent: true
         })
+
     }
 
     _defineConverters() {
         const conversion = this.editor.conversion;
 
-        conversion.for('upcast').elementToElement({
-            view: {
-                name: 'section',
-                classes: 'question-box'
-            },
-            model: (viewElement, { writer: modelWriter }) => {
-                return modelWriter.createElement('questionBox', {
-                    id: parseInt(viewElement.getAttribute('data-id'))
-                })
-            }
-        })
-        conversion.for('dataDowncast').elementToElement({
-            model: 'questionBox',
-            view: ( modelElement, { writer: viewWriter } ) => {
-                // const section = viewWriter.createContainerElement( 'section', { class: 'question-box' } );
+        QuestionBoxConversion(conversion);
+        QuestionBoxHeaderConversion(conversion);
+        QuestionBoxLeftArrowConversion(conversion);
+        QuestionBoxRightArrowConversion(conversion);
+        QuestionBoxHeaderCurrentAnswerConversion(conversion);
+        QuestionBoxHeaderAnswerConversion(conversion);
+        QuestionBoxBodyConversion(conversion);
+        QuestionBoxAnswerConversion(conversion);
+    }
+}
 
-                // return toWidget( section, viewWriter, { label: 'question box widget' } );
-                return viewWriter.createEmptyElement('section', {
-                    class: 'question-box',
-                    'data-id': modelElement.getAttribute('id')
-                })
-            }
-        })
+const QuestionBoxConversion = conversion => {
+    conversion.for('upcast').elementToElement({
+        view: {
+            name: 'section',
+            classes: 'question-box'
+        },
+        model: (viewElement, { writer: modelWriter }) => {
+            return modelWriter.createElement('questionBox', {
+                id: parseInt(viewElement.getAttribute('data-id'))
+            })
+        }
+    })
 
+    conversion.for('dataDowncast').elementToElement({
+        model: 'questionBox',
+        view: ( modelElement, { writer: viewWriter } ) => {
+            // const section = viewWriter.createContainerElement( 'section', { class: 'question-box' } );
 
-        conversion.for( 'editingDowncast' ).elementToElement( {
-            model: 'questionBox',
-            view: ( modelElement, { writer: viewWriter } ) => {
+            // return toWidget( section, viewWriter, { label: 'question box widget' } );
+            return viewWriter.createContainerElement('section', {
+                class: 'question-box',
+                'data-id': modelElement.getAttribute('id')
+            })
+        }
+    })
 
-                const id = modelElement.getAttribute( 'id' );
-                const section = viewWriter.createContainerElement( 'section', {
-                    class: 'question-box',
-                    'data-id': id
-                } );
+    conversion.for( 'editingDowncast' ).elementToElement( {
+        model: 'questionBox',
+        view: ( modelElement, { writer: viewWriter } ) => {
 
-                // viewWriter.insert( viewWriter.createPositionAt( section, 0 ), section );
+            const id = modelElement.getAttribute( 'id' );
+            const section = viewWriter.createContainerElement( 'section', {
+                class: 'question-box',
+                'data-id': id
+            } );
 
-                return toWidget( section, viewWriter, { label: 'product preview widget' } );
-            }
-        } );
+            return toWidget( section, viewWriter, { label: 'product preview widget' } );
+        }
+    } );
+}
 
-        conversion.for('upcast').elementToElement({
-            model: 'questionBoxHeader',
-            view: {
-                name: 'div',
-                classes: 'question-box__header',
-                contentEditable: 'false'
-            }
-        })
-        conversion.for('downcast').elementToElement({
-            model: 'questionBoxHeader',
-            view: {
-                name: 'div',
-                classes: 'question-box__header'
-            }
-        })
+const QuestionBoxHeaderConversion = conversion => {
+    conversion.for('upcast').elementToElement({
+        view: {
+            name: 'div',
+            classes: 'question-box__header'
+        },
+        model: (viewElement, {writer: modelWriter}) => {
+            return modelWriter.createElement('questionBoxHeader')
+        }
+    })
 
-        conversion.for('upcast').elementToElement({
-            model: 'questionBoxLeftArrow',
-            view: {
-                name: 'span',
-                classes: ['question-box__arrow', 'question-box__arrow--left']
-            }
-        })
+    conversion.for('downcast').elementToElement({
+        model: 'questionBoxHeader',
+        view: (modelElement, {writer: viewWriter}) => {
+            return viewWriter.createContainerElement('div', {
+                class: 'question-box__header'
+            })
+        }
+    })
 
-        conversion.for('downcast').elementToElement({
-            model: 'questionBoxLeftArrow',
-            view: {
-                name: 'span',
-                classes: ['question-box__arrow', 'question-box__arrow--left']
-            }
-        })
+    // conversion.for('editingDowncast', {
+    //     model: 'questionBoxHeader',
+    //     view: (modelElement, { writer: viewWriter }) => {
+    //         const div = viewWriter.createElement('div', {
+    //             class: 'question-box__header'
+    //         })
 
-        conversion.for('upcast').elementToElement({
-            model: 'questionBoxRightArrow',
-            view: {
-                name: 'span',
-                classes: ['question-box__arrow', 'question-box__arrow--right']
-            }
-        })
+    //         return toWidget(div, viewWriter, {label: 'header'});
+    //     }
+    // })
+}
 
-        conversion.for('downcast').elementToElement({
-            model: 'questionBoxRightArrow',
-            view: {
-                name: 'span',
-                classes: ['question-box__arrow', 'question-box__arrow--right']
-            }
-        })
+const QuestionBoxLeftArrowConversion = conversion => {
+    conversion.for('upcast').elementToElement({
+        model: 'questionBoxLeftArrow',
+        view: {
+            name: 'span',
+            classes: ['question-box__arrow', 'question-box__arrow--left']
+        }
+    })
 
-        conversion.for('upcast').elementToElement({
-            model: 'questionBoxTitle',
-            view: {
-                name: 'h3',
-                classes: 'question-box__header__title'
-            }
-        })
+    conversion.for('downcast').elementToElement({
+        model: 'questionBoxLeftArrow',
+        view: {
+            name: 'span',
+            classes: ['question-box__arrow', 'question-box__arrow--left']
+        }
+    })
+}
 
-        conversion.for('downcast').elementToElement({
-            model: 'questionBoxTitle',
-            view: {
-                name: 'h3',
-                classes: 'question-box__header__title'
-            }
-        })
+const QuestionBoxRightArrowConversion = conversion => {
+    conversion.for('upcast').elementToElement({
+        model: 'questionBoxRightArrow',
+        view: {
+            name: 'span',
+            classes: ['question-box__arrow', 'question-box__arrow--right']
+        }
+    })
 
-        conversion.for('upcast').elementToElement({
-            model: 'questionBoxHeaderCurrentAnswer',
-            view: {
-                name: 'div',
-                classes: 'question-box__header__current-answer'
-            }
-        })
-        conversion.for('downcast').elementToElement({
-            model: 'questionBoxHeaderCurrentAnswer',
-            view: {
-                name: 'div',
-                classes: 'question-box__header__current-answer'
-            }
-        })
+    conversion.for('downcast').elementToElement({
+        model: 'questionBoxRightArrow',
+        view: {
+            name: 'span',
+            classes: ['question-box__arrow', 'question-box__arrow--right']
+        }
+    })
+}
 
+const QuestionBoxHeaderCurrentAnswerConversion = conversion => {
+    conversion.for('upcast').elementToElement({
+        view: {
+            name: 'div',
+            classes: 'question-box__header__current-answer'
+        },
+        model: (viewElement, {writer: modelWriter}) => {
+            return modelWriter.createElement('questionBoxHeaderCurrentAnswer')
+        }
+    })
 
-        conversion.for('upcast').elementToElement({
+    conversion.for('downcast').elementToElement({
+        model: 'questionBoxHeaderCurrentAnswer',
+        view: (modelElement, {writer: viewWriter}) => {
+            return viewWriter.createContainerElement('div', {
+                class: 'question-box__header__current-answer'
+            })
+        }
+    })
+}
+
+const QuestionBoxHeaderAnswerConversion = conversion => {
+   conversion.for('upcast').elementToElement({
             view: {
                 name: 'div',
                 classes: 'question-box__header__answer'
@@ -268,57 +291,86 @@ export default class QuestionBoxEditing extends Plugin {
                 })
             }
         })
-        conversion.for('downcast').elementToElement({
-            model: 'questionBoxAnswer',
-            view: ( modelElement, { writer: viewWriter } ) => {
-                const div = viewWriter.createEditableElement( 'div', { 
-                    class: 'question-box__header__answer',
-                    'data-hidden': modelElement.getAttribute('data-hidden')
-                }
-                );
+    
+    conversion.for('downcast').elementToElement({
+        model: 'questionBoxAnswer',
+        view: ( modelElement, { writer: viewWriter } ) => {
+           const div = viewWriter.createContainerElement('div', {
+               class: 'question-box__header__answer',
+               'data-hidden': modelElement.getAttribute('data-hidden')
+           })
 
-                return toWidgetEditable( div, viewWriter );
-            }
-        })
+           return div;
+        }
+    })
+}
 
-        conversion.for('upcast').elementToElement({
-            model: 'questionBoxBody',
-            view: {
-                name: 'div',
-                classes: 'question-box__body'
-            }
-        })
-        conversion.for('downcast').elementToElement({
-            model: 'questionBoxBody',
-            view: {
-                name: 'div',
-                classes: 'question-box__body'
-            }
-        })
+const QuestionBoxBodyConversion = conversion => {
+    conversion.for('upcast').elementToElement({
+        model: 'questionBoxBody',
+        view: {
+            name: 'div',
+            classes: 'question-box__body'
+        }
+    })
+    conversion.for('downcast').elementToElement({
+        model: 'questionBoxBody',
+        view: {
+            name: 'div',
+            classes: 'question-box__body'
+        }
+    })
+}
 
-        conversion.for('upcast').elementToElement({
-            view: {
-                name: 'div',
-                classes: 'question-box__answer',
-                hidden: true
-            },
-            model: (viewElement, { writer: modelWriter }) => {
-                return modelWriter.createElement('questionBoxBodyAnswer', {
-                    'data-hidden': viewElement.getAttribute('data-hidden')
-                })
-            }
-        })
-        conversion.for('downcast').elementToElement({
-            model: 'questionBoxBodyAnswer',
-            view: ( modelElement, { writer: viewWriter } ) => {
-                const div = viewWriter.createEditableElement( 'div',{ 
-                    class: 'question-box__answer',
-                    'data-hidden': modelElement.getAttribute('data-hidden')
-                }
-                );
+const QuestionBoxAnswerConversion = conversion => {
+    conversion.for('upcast').elementToElement({
+        view: {
+            name: 'div',
+            classes: 'question-box__answer',
+        },
+        model: (viewElement, { writer: modelWriter }) => {
+            return modelWriter.createElement('questionBoxBodyAnswer', {
+                'data-hidden': viewElement.getAttribute('data-hidden')
+            })
+        }
+    })
 
-                return toWidgetEditable( div, viewWriter );
+    // conversion.for('downcast').elementToElement({
+    //     model: 'questionBoxBodyAnswer',
+    //     view: ( modelElement, { writer: viewWriter } ) => {
+    //         const div = viewWriter.createEditableElement( 'div',{ 
+    //             class: 'question-box__answer',
+    //             'data-hidden': modelElement.getAttribute('data-hidden')
+    //         }
+    //         );
+
+    //         return toWidgetEditable( div, viewWriter );
+    //     }
+    // })
+
+    conversion.for('dataDowncast').elementToElement({
+        model: 'questionBoxBodyAnswer',
+        view: ( modelElement, { writer: viewWriter } ) => {
+            const div = viewWriter.createEditableElement( 'div',{ 
+                class: 'question-box__answer',
+                'data-hidden': modelElement.getAttribute('data-hidden')
             }
-        })
-    }
+            );
+
+            return toWidgetEditable( div, viewWriter );
+        }
+    })
+
+    conversion.for( 'editingDowncast' ).elementToElement( { 
+        model: 'questionBoxBodyAnswer',
+        view: ( modelElement, { writer: viewWriter } ) => {
+            const hidden = modelElement.getAttribute('data-hidden' )
+            const div = viewWriter.createEditableElement('div', {
+                class: 'question-box__answer',
+                'data-hidden': hidden
+            })
+
+            return toWidgetEditable(div, viewWriter);
+        }
+    } )
 }

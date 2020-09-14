@@ -14,33 +14,33 @@ function createQuestionBox(writer) {
     const rightArrow = writer.createElement('questionBoxRightArrow');
     writer.insert(writer.createText(`==>`), writer.createPositionAt( rightArrow, 0 ));
 
-    const title = writer.createElement('questionBoxTitle');
-    writer.insert(writer.createText(`Title id - ${id}`), writer.createPositionAt(title, 0));
+    // const title = writer.createElement('questionBoxTitle');
+    // writer.insert(writer.createText(`Title id - ${id}`), writer.createPositionAt(title, 0));
 
-    const currentAnswer = writer.createElement('questionBoxHeaderCurrentAnswer');
+    // const currentAnswer = writer.createElement('questionBoxHeaderCurrentAnswer');
     
-    const yes = writer.createElement('questionBoxAnswer');
-    writer.insert(writer.createText(`Yes`), writer.createPositionAt( yes, 0 ));
-    const no = writer.createElement('questionBoxAnswer');
-    writer.insert(writer.createText(`No`), writer.createPositionAt( no, 0 ));
+    // const yes = writer.createElement('questionBoxAnswer');
+    // writer.insert(writer.createText(`Yes`), writer.createPositionAt( yes, 0 ));
+    // const no = writer.createElement('questionBoxAnswer');
+    // writer.insert(writer.createText(`No`), writer.createPositionAt( no, 0 ));
 
-    writer.append(yes, currentAnswer);
-    writer.append(no, currentAnswer);
+    // writer.append(yes, currentAnswer);
+    // writer.append(no, currentAnswer);
     writer.append(leftArrow, header);
     writer.append(rightArrow, header);
-    writer.append(title, header);
-    writer.append(currentAnswer, header);
+    // writer.append(title, header);
+    // writer.append(currentAnswer, header);
 
-    const body = writer.createElement('questionBoxBody');
-    const a1 = writer.createElement('questionBoxBodyAnswer');
-    writer.insert(writer.createText('Yes'), writer.createPositionAt(a1, 0));
-    const a2 = writer.createElement('questionBoxBodyAnswer');
-    writer.insert(writer.createText('No'), writer.createPositionAt(a2, 0)); 
-    writer.append(a1, body);
-    writer.append(a2, body);
+    // const body = writer.createElement('questionBoxBody');
+    // const a1 = writer.createElement('questionBoxBodyAnswer');
+    // writer.insert(writer.createText('Yes'), writer.createPositionAt(a1, 0));
+    // const a2 = writer.createElement('questionBoxBodyAnswer');
+    // writer.insert(writer.createText('No'), writer.createPositionAt(a2, 0)); 
+    // writer.append(a1, body);
+    // writer.append(a2, body);
 
     writer.append(header, questionBox);
-    writer.append(body, questionBox);
+    // writer.append(body, questionBox);
     return questionBox;
 }
 
@@ -334,19 +334,6 @@ const QuestionBoxAnswerConversion = conversion => {
             })
         }
     })
-
-    // conversion.for('downcast').elementToElement({
-    //     model: 'questionBoxBodyAnswer',
-    //     view: ( modelElement, { writer: viewWriter } ) => {
-    //         const div = viewWriter.createEditableElement( 'div',{ 
-    //             class: 'question-box__answer',
-    //             'data-hidden': modelElement.getAttribute('data-hidden')
-    //         }
-    //         );
-
-    //         return toWidgetEditable( div, viewWriter );
-    //     }
-    // })
 
     conversion.for('dataDowncast').elementToElement({
         model: 'questionBoxBodyAnswer',
